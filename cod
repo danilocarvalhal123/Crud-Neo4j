@@ -1,0 +1,36 @@
+// Conectando ao Neo4j - verifica se existe um driver Neo4j chamado "neo4j". Se não existir, a conexão é estabelecida.
+
+MATCH (driver:Neo4jDriver)
+WHERE driver.name = "neo4j"
+RETURN driver
+
+// Adicionar contato - Cria um nó "Contato" com os atributos "nome" e "telefone".
+
+MATCH (driver:Neo4jDriver)
+WHERE driver.name = "neo4j"
+CREATE (contato:Contato {nome: $nome, telefone: $telefone})
+WITH driver, contato
+MATCH (driver:Neo4jDriver)
+WHERE driver.name = "neo4j"
+UNWIND $telefones AS telefone
+CREATE (contato:Contato {nome: $nome, telefone: telefone})
+WITH driver, contatos
+MATCH (driver:Neo4jDriver)
+WHERE driver.name = "neo4j"
+UNWIND $emails AS email
+CREATE (contato:Contato {nome: $nome, email: email})
+
+// Listar contatos - Retorna todos os nós "Contato".
+
+MATCH (contato:Contato)
+RETURN contato
+
+// Atualizar contato - Atualiza os atributos "nome" e "telefone" do nó "Contato" com base no nome antigo.
+
+MATCH (contato:Contato {nome: $nomeAntigo})
+SET contato.nome = $nomeNovo, contato.telefone = $telefoneNovo
+
+// Excluir contato -  Exclui o nó "Contato" com base no nome.
+
+MATCH (contato:Contato {nome: $nome})
+DELETE contato
